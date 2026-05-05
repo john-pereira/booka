@@ -27,13 +27,30 @@ class WpBooking_Plugin {
     }
 
     private function load_dependencies(): void {
-        // Semanas 2 e 3: aqui entram as classes admin e public
-        // require_once WPBOOKING_PLUGIN_DIR . 'admin/class-admin.php';
-        // require_once WPBOOKING_PLUGIN_DIR . 'public/class-public.php';
+         require_once WPBOOKING_PLUGIN_DIR . 'admin/class-admin.php';
     }
 
     private function define_admin_hooks(): void {
-        // add_action( 'admin_menu', [ $admin, 'add_plugin_page' ] );
+        $admin = new WpBooking_Admin(
+        $this->get_plugin_name(),
+        $this->get_version()
+        );
+
+        // Registrar o CPT
+        add_action( 'init', [ $admin, 'register_post_type' ] );
+
+        // Meta boxes
+        add_action( 'add_meta_boxes', [ $admin, 'add_meta_boxes' ] );
+        add_action( 'save_post_wpbooking', [ $admin, 'save_meta_boxes' ], 10, 2 );
+
+        // Colunas customizadas na listagem
+        add_filter( 'manage_wpbooking_posts_columns',       [ $admin, 'set_columns' ] );
+        add_action( 'manage_wpbooking_posts_custom_column', [ $admin, 'render_column' ], 10, 2 );
+        add_filter( 'manage_edit-wpbooking_sortable_columns', [ $admin, 'sortable_columns' ] );
+
+        // Filtro status pedidos
+        add_action( 'restrict_manage_posts', [ $admin, 'add_status_filter' ] );
+        add_filter( 'parse_query',           [ $admin, 'filter_by_status'  ] );
     }
 
     private function define_public_hooks(): void {
