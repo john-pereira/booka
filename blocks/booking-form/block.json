@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbooking/booking-form",
+  "version": "1.0.0",
+  "title": "WP Booking — Formulário",
+  "category": "widgets",
+  "icon": "calendar-alt",
+  "description": "Exibe o formulário de agendamento.",
+  "supports": { "html": false },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Fazer um agendamento"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": "Confirmaremos via SMS ou WhatsApp."
+    }
+  },
+  "textdomain": "wpbooking",
+  "editorScript": "file:./build/index.js",
+  "editorStyle":  "file:./build/index.css",
+  "style":        "file:./build/style-index.css",
+  "render":       "file:./render.php"
+}

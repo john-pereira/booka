@@ -1,0 +1,62 @@
+.wpbooking-form-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    font-family: sans-serif;
+}
+.wpbooking-form-wrap h3 {
+    margin: 0 0 4px;
+    font-size: 18px;
+}
+.wpbooking-form-wrap p.sub {
+    margin: 0 0 20px;
+    color: #666;
+    font-size: 14px;
+}
+.wpbooking-form-wrap .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.wpbooking-form-wrap .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+.wpbooking-form-wrap label {
+    font-size: 12px;
+    color: #555;
+}
+.wpbooking-form-wrap input,
+.wpbooking-form-wrap select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+.wpbooking-form-wrap button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: #3C3489;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 4px;
+}
+.wpbooking-form-wrap button[type="submit"]:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+.wpbooking-msg {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+.wpbooking-msg.success { background: #E1F5EE; color: #085041; }
+.wpbooking-msg.error   { background: #FCEBEB; color: #791F1F; }
+@media (max-width: 480px) {
+    .wpbooking-form-wrap .row { grid-template-columns: 1fr; }
+}

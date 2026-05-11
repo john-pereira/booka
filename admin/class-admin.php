@@ -248,4 +248,58 @@ class WpBooking_Admin {
         $query->query_vars['meta_value'] = sanitize_text_field( $status );
     }
 
+    // Adicionar no define_admin_hooks() em class-wpbooking.php:
+// add_action( 'admin_menu', [ $admin, 'add_settings_page' ] );
+// add_action( 'admin_init', [ $admin, 'register_settings'  ] );
+
+public function add_settings_page(): void {
+    add_submenu_page(
+        'edit.php?post_type=wpbooking',
+        'Configurações',
+        'Configurações',
+        'manage_options',
+        'wpbooking-settings',
+        [ $this, 'render_settings_page' ]
+    );
+}
+
+public function register_settings(): void {
+    register_setting( 'wpbooking_options', 'wpbooking_laravel_url',
+        [ 'sanitize_callback' => 'esc_url_raw' ] );
+    register_setting( 'wpbooking_options', 'wpbooking_twilio_sid',
+        [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'wpbooking_options', 'wpbooking_twilio_token',
+        [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'wpbooking_options', 'wpbooking_twilio_from',
+        [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'wpbooking_options', 'wpbooking_confirmation_msg',
+        [ 'sanitize_callback' => 'sanitize_textarea_field' ] );
+}
+
+    public function render_settings_page(): void { ?>
+        <div class="wrap">
+            <h1>WP Booking — Configurações</h1>
+            <form method="post" action="options.php">
+                <?php settings_fields( 'wpbooking_options' ); ?>
+                <table class="form-table">
+                    <tr>
+                        <th>URL da API Laravel</th>
+                        <td><input type="url" name="wpbooking_laravel_url" class="regular-text"
+                            value="<?php echo esc_attr( get_option('wpbooking_laravel_url') ); ?>"
+                            placeholder="https://sua-api.railway.app" /></td>
+                    </tr>
+                    <tr>
+                        <th>Mensagem de confirmação</th>
+                        <td><textarea name="wpbooking_confirmation_msg" rows="3" class="large-text"><?php
+                            echo esc_textarea( get_option('wpbooking_confirmation_msg',
+                                'Olá {name}! Seu {service} em {date} às {time} foi confirmado.') );
+                        ?></textarea>
+                        <p class="description">Variáveis: {name} {phone} {service} {date} {time}</p></td>
+                    </tr>
+                </table>
+                <?php submit_button(); ?>
+            </form>
+        </div>
+    <?php }
+
 }

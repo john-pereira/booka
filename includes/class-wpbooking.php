@@ -27,8 +27,10 @@ class WpBooking_Plugin {
     }
 
     private function load_dependencies(): void {
-         require_once WPBOOKING_PLUGIN_DIR . 'admin/class-admin.php';
+        require_once WPBOOKING_PLUGIN_DIR . 'admin/class-admin.php';
+        require_once WPBOOKING_PLUGIN_DIR . 'public/class-public.php'; // novo
     }
+
 
     private function define_admin_hooks(): void {
         $admin = new WpBooking_Admin(
@@ -54,7 +56,20 @@ class WpBooking_Plugin {
     }
 
     private function define_public_hooks(): void {
-        // add_shortcode( 'wpbooking_form', [ $public, 'render_form' ] );
+        $public = new WpBooking_Public(
+            $this->get_plugin_name(),
+            $this->get_version()
+        );
+
+        add_action( 'wp_enqueue_scripts', [ $public, 'enqueue_styles'  ] );
+        add_action( 'wp_enqueue_scripts', [ $public, 'enqueue_scripts' ] );
+        add_shortcode( 'wpbooking_form',  [ $public, 'render_form'     ] );
+
+        // Ajax: logado e não-logado (clientes do site não têm conta WP)
+        add_action( 'wp_ajax_wpbooking_submit',        [ $public, 'handle_ajax' ] );
+        add_action( 'wp_ajax_nopriv_wpbooking_submit', [ $public, 'handle_ajax' ] );
+        // registro do bloco
+        add_action( 'init', [ $this, 'register_blocks' ] );
     }
 
     public function get_plugin_name(): string {
@@ -64,4 +79,11 @@ class WpBooking_Plugin {
     public function get_version(): string {
         return $this->version;
     }
+
+    public function register_blocks(): void {
+    register_block_type(
+        WPBOOKING_PLUGIN_DIR . 'blocks/booking-form'
+        // block.json é lido automaticamente
+    );
+}
 }
