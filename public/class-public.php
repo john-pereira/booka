@@ -150,16 +150,34 @@ class WpBooking_Public {
         ]);
     }
 
-    private function notify_laravel( array $data ): void {
-        // Semana 4: substituir pela URL real do Laravel
+    private function notify_laravel( array $data ): void
+    {
         $api_url = get_option( 'wpbooking_laravel_url', '' );
+        $secret  = get_option( 'wpbooking_api_secret',  '' );
+
         if ( empty( $api_url ) ) return;
 
-        wp_remote_post( $api_url . '/api/bookings', [
-            'timeout'     => 10,
-            'headers'     => [ 'Content-Type' => 'application/json' ],
-            'body'        => wp_json_encode( $data ),
+        $response = wp_remote_post( rtrim( $api_url, '/' ) . '/api/bookings', [
+            'timeout'     => 15,
+            'headers'     => [
+                'Content-Type' => 'application/json',
+                'X-WP-Secret'  => $secret, // header de autenticação
+            ],
+            'body'        => wp_json_encode([
+                'name'         => $data['name'],
+                'email'        => $data['email'],
+                'phone'        => $data['phone'],
+                'service'      => $data['service'],
+                'booking_date' => $data['date'],
+                'booking_time' => $data['time'],
+                'wp_post_id'   => $data['booking_id'],
+            ]),
             'data_format' => 'body',
         ]);
+
+        // Log de erro se falhar (visível em WP_DEBUG_LOG)
+        if ( is_wp_error( $response ) ) {
+            error_log( 'WP Booking — Laravel error: ' . $response->get_error_message() );
+        }
     }
 }

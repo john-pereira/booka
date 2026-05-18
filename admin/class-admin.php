@@ -274,6 +274,8 @@ public function register_settings(): void {
         [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'wpbooking_options', 'wpbooking_confirmation_msg',
         [ 'sanitize_callback' => 'sanitize_textarea_field' ] );
+    register_setting( 'wpbooking_options', 'wpbooking_api_secret',
+        [ 'sanitize_callback' => 'sanitize_text_field' ] );
 }
 
     public function render_settings_page(): void { ?>
@@ -296,6 +298,17 @@ public function register_settings(): void {
                         ?></textarea>
                         <p class="description">Variáveis: {name} {phone} {service} {date} {time}</p></td>
                     </tr>
+                    <tr>
+                    <th>API Secret</th>
+                        <td>
+                            <input type="password" name="wpbooking_api_secret"
+                                class="regular-text"
+                                value="<?php echo esc_attr( get_option('wpbooking_api_secret') ); ?>" />
+                            <p class="description">
+                                SA1A51515W1QWDA2SD
+                            </p>
+                        </td>
+                    </tr>
                 </table>
                 <?php submit_button(); ?>
             </form>
@@ -303,3 +316,4 @@ public function register_settings(): void {
     <?php }
 
 }
+
